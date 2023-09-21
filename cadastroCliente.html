@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Clientes</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <div class="container-geral-4">
+        
+        <h1>Cadastro de Clientes</h1>
+
+        <div class="container-porta-cards-cad">
+
+            
+
+            <div class="inputs-cadastro">
+
+                <h3>Nome</h3>
+                <input type="text" id="nome" placeholder="Informe o nome">
+                <h3>CPF</h3>
+                <input type="text" id="cpf" placeholder="Informe o CPF">
+                <h3>Telefone</h3>
+                <input type="text" id="fone" placeholder="Informe o telefone">
+                <hr>
+                <button onclick="Salvar()">Salvar</button>
+                <button onclick="Mostrar()">Mostrar</button>
+                <button onclick="Excluir()">Excluir</button>
+                <hr>
+                <div id="Ver" style="display: flex;">
+                    
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        var clientes = [];
+
+        function Salvar() {
+            let vNome = document.getElementById('nome')
+            if (vNome.value == '') {
+                alert('Informe o Nome');
+                vNome.focus();
+                return
+            }
+
+            let vCpf = document.getElementById('cpf')
+            if (vCpf.value == '') {
+                alert('Informe o CPF');
+                vCpf.focus();
+                return
+            }
+
+            let vFone = document.getElementById('fone')
+            if (vFone.value == '') {
+                alert('Informe o Telefone');
+                vFone.focus();
+                return
+            }
+
+            let cliente = {
+                Nome: vNome.value,
+                Cpf: vCpf.value,
+                Fone: vFone.value
+            };
+
+            clientes.push(cliente);
+            localStorage.setItem("Clientes", JSON.stringify(clientes));
+            vNome.value = "";
+            vCpf.value = "";
+            vFone.value = "";
+            vNome.focus();
+            Mostrar();
+        }
+
+        function Mostrar() {
+            let mostraDiv = document.getElementById("Ver");
+            mostraDiv.innerHTML = '';
+            let temp = localStorage.getItem("Clientes");
+            if (temp) {
+                clientes = JSON.parse(temp);
+                if (clientes && clientes.length > 0) {
+                    let html = "";
+                    clientes.forEach(c => {
+                        html += "<div class='cliente'>"
+                        html += `<div>CPF: ${c.Cpf}</div>`;
+                        html += `<div>Nome: ${c.Nome}</div>`;
+                        html += `<div>Fone: ${c.Fone}</div>`;
+                        html += "</div>";
+                    });
+                    mostraDiv.innerHTML = html;
+                } else {
+                    mostraDiv.innerHTML = "Nenhum cliente encontrado!!! :(";
+                }
+            }
+        }
+
+        function Excluir() {
+            let iNome = document.getElementById('nome');
+            if (iNome && iNome.value) {
+                let nome = iNome.value;
+                let temp = localStorage.getItem("Clientes");
+                if (temp) {
+                    let index = -1;
+                    temp = JSON.parse(temp);
+                    for (let i = 0; i < temp.length; i++) {
+                        if (temp[i].Nome.toLowerCase() == nome.toLowerCase()) {
+                            index = i;
+                            break;
+                        }
+                    }
+                    if (index > -1) {
+                        temp.splice(index, 1);                        
+                        localStorage.setItem("Clientes", JSON.stringify(temp));
+                    } else {
+                        alert(`Cliente [${nome}] não encontrado!`);
+                    }
+                }
+
+            } else {
+                alert("Informe o nome do Cliente a ser excluído");
+                vNome.focus();
+            }
+
+            Mostrar();
+
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Produtos</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <div class="container-geral-4">
+        
+        <h1>Cadastro de Produtos</h1>
+
+        <div class="container-porta-cards-cad-fornecedor">            
+
+            <div class="inputs-cadastro-for">
+
+                <h3>Empresa</h3>
+                <input type="text" id="nome" placeholder="Informe o Nome">
+                <h3>CNPJ</h3>
+                <input type="text" id="cnpj" placeholder="Informe o CNPJ">
+                <h3>Telefone</h3>
+                <input type="text" id="fone" placeholder="Informe o telefone">
+                <h3>Email</h3>
+                <input type="text" id="email" placeholder="Informe o E-mail">
+                
+                <hr>
+                <button onclick="Salvar()">Salvar</button>
+                <button onclick="Mostrar()">Mostrar</button>
+                <button onclick="Excluir()">Excluir</button>
+                <hr>
+                <div id="Ver" style="display: flex;">
+                    
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        var fornecedores = [];
+
+        function Salvar() {
+            let vNome = document.getElementById('nome')
+            if (vNome.value == '') {
+                alert('Informe o Nome');
+                vNome.focus();
+                return
+            }
+
+            let vCNPJ = document.getElementById('cnpj')
+            if (vCNPJ.value == '') {
+                alert('Informe o CNPJ');
+                vCNPJ.focus();
+                return
+            }
+
+            let vFone = document.getElementById('fone')
+            if (vFone.value == '') {
+                alert('Informe o Telefone');
+                vFone.focus();
+                return
+            }
+
+            let vEmail = document.getElementById('email')
+            if (vEmail.value == '') {
+                alert('Informe o email');
+                vEmail.focus();
+                return
+            }
+
+            let fornecedor = {
+                Nome: vNome.value,
+                CNPJ: vCNPJ.value,
+                Fone: vFone.value,
+                Email: vEmail.value,                
+            };
+
+            fornecedores.push(fornecedor);
+            localStorage.setItem("Fornecedores", JSON.stringify(fornecedores));
+            vNome.value = "";
+            vCNPJ.value = "";
+            vFone.value = "";
+            vEmail.value = "";            
+            vNome.focus();
+
+            //Mostrar();
+            
+        }
+
+        function Mostrar() {
+            let mostraDiv = document.getElementById("Ver");
+            mostraDiv.innerHTML = '';
+            let temp = localStorage.getItem("Fornecedores");
+            if (temp) {
+                fornecedores = JSON.parse(temp);
+                if (fornecedores && fornecedores.length > 0) {
+                    let html = "";
+                    fornecedores.forEach(c => {
+                        html += "<div class='fornecedor'>"
+                        html += `<div>CNPJ: ${c.CNPJ}</div>`;
+                        html += `<div>Nome: ${c.Nome}</div>`;
+                        html += `<div>Fone: ${c.Fone}</div>`;
+                        html += `<div>Email: ${c.Email}</div>`;                        
+                        html += "</div>";
+                    });
+                    mostraDiv.innerHTML = html;
+                } else {
+                    mostraDiv.innerHTML = "Nenhum fornecedor encontrado!!! :(";
+                }
+            }
+        }
+
+        function Excluir() {
+            let iNome = document.getElementById('nome');
+            if (iNome && iNome.value) {
+                let nome = iNome.value;
+                let temp = localStorage.getItem("Fornecedores");
+                if (temp) {
+                    let index = -1;
+                    temp = JSON.parse(temp);
+                    for (let i = 0; i < temp.length; i++) {
+                        if (temp[i].Nome.toLowerCase() == nome.toLowerCase()) {
+                            index = i;
+                            break;
+                        }
+                    }
+                    if (index > -1) {
+                        temp.splice(index, 1);                        
+                        localStorage.setItem("Fornecedores", JSON.stringify(temp));
+                    } else {
+                        alert(`Fornecedor [${nome}] não encontrado!`);
+                    }
+                }
+            } else {
+                alert("Informe o nome do Fornecedor a ser excluído");
+                vNome.focus();
+            }
+           // Mostrar();
+
+        }
+    </script>   
+
+</body>
+
+</html>
